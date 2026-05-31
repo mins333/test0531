@@ -1,0 +1,110 @@
+/* 기본 스타일 초기화 및 배경 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Malgun Gothic', dotum, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #74abe2, #557ad1);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* 대시보드 컨테이너 */
+.container {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+/* 헤더 영역 */
+header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+header p {
+    font-size: 0.9rem;
+    color: #e0e0e0;
+    margin-bottom: 30px;
+}
+
+/* 메인 날씨 표시 (기온) */
+.weather-main {
+    margin-bottom: 40px;
+}
+
+.temp-container {
+    font-size: 4.5rem;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 1;
+}
+
+.temp-container .unit {
+    font-size: 2rem;
+    vertical-align: super;
+    font-weight: normal;
+}
+
+.weather-status {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 15px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+/* 세부 항목 격자 레이아웃 */
+.weather-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.detail-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detail-item .label {
+    font-size: 0.85rem;
+    color: #d1d8ec;
+    margin-bottom: 5px;
+}
+
+.detail-item .value {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* 푸터 영역 */
+footer {
+    margin-top: 20px;
+}
+
+footer p {
+    font-size: 0.75rem;
+    color: #cccccc;
+}
