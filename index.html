@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 기상 정보 대시보드</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>실시간 기상 실황</h1>
+            <p id="current-time">조회 시각: 업데이트 중...</p>
+        </header>
+
+        <main class="weather-board">
+            <div class="weather-main">
+                <div class="temp-container">
+                    <span id="temp-value">--</span><span class="unit">°C</span>
+                </div>
+                <p class="weather-status" id="rain-status">강수 정보 조회 중...</p>
+            </div>
+
+            <div class="weather-details">
+                <div class="detail-item">
+                    <span class="label">1시간 강수량</span>
+                    <span class="value" id="rn1-value">-- mm</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">습도</span>
+                    <span class="value" id="reh-value">-- %</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">풍향</span>
+                    <span class="value" id="vec-value">-- deg</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">풍속</span>
+                    <span class="value" id="wsd-value">-- m/s</span>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>데이터 출처: 기상청 단기예보 조회서비스 (초단기실황)</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
