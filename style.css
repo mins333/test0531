@@ -1,122 +1,132 @@
-document.addEventListener("DOMContentLoaded", () => {
-    fetchWeatherData();
-});
-
-function fetchWeatherData() {
-    const API_KEY = "b6db065968b639643a9ac6d55d8921a0e2c9ba1b3c640ff91ea1589a97bade53";
-    const NX = "56";
-    const NY = "125";
-    
-    // 기상청 API 조건에 맞는 날짜 및 시간 계산
-    const { baseDate, baseTime, viewTime } = getBaseDateTime();
-    
-    // 화면에 조회 기준 시간 표시
-    document.getElementById("current-time").innerText = `발표 시각: ${viewTime}`;
-
-    const url = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey=${API_KEY}&pageNo=1&numOfRows=1000&dataType=JSON&base_date=${baseDate}&base_time=${baseTime}&nx=${NX}&ny=${NY}`;
-
-    fetch(url)
-        .then(response => {
-            if (!response.ok) throw new Error("네트워크 응답에 문제가 발생했습니다.");
-            return response.json();
-        })
-        .then(data => {
-            if (data.response.header.resultCode !== "00") {
-                throw new Error(data.response.header.resultMsg);
-            }
-            
-            const items = data.response.body.items.item;
-            parseAndDisplayWeather(items);
-        })
-        .catch(error => {
-            console.error("데이터 로드 실패:", error);
-            document.getElementById("rain-status").innerText = "데이터를 불러올 수 없습니다.";
-        });
+/* 기본 스타일 초기화 및 배경 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Malgun Gothic', dotum, sans-serif;
 }
 
-/**
- * 기상청 초단기실황 표출 기준(매시 40분 업데이트)에 맞추어 
- * base_date와 base_time을 계산하는 함수
- */
-function getBaseDateTime() {
-    const now = new Date();
-    let year = now.getFullYear();
-    let month = now.getMonth() + 1;
-    let date = now.getDate();
-    let hours = now.getHours();
-    let minutes = now.getMinutes();
-
-    // 매시 40분 이전이면 전 시각 데이터를 요청해야 함
-    if (minutes < 40) {
-        if (hours === 0) {
-            // 00시 40분 이전인 경우 전날 23시로 설정
-            const yesterday = new Date(now.setDate(now.getDate() - 1));
-            year = yesterday.getFullYear();
-            month = yesterday.getMonth() + 1;
-            date = yesterday.getDate();
-            hours = 23;
-        } else {
-            hours -= 1;
-        }
-    }
-
-    // 포맷팅 (자리수 맞춤)
-    const strYear = String(year);
-    const strMonth = String(month).padStart(2, '0');
-    const strDate = String(date).padStart(2, '0');
-    const strHours = String(hours).padStart(2, '0');
-
-    return {
-        baseDate: `${strYear}${strMonth}${strDate}`,
-        baseTime: `${strHours}00`,
-        viewTime: `${strYear}-${strMonth}-${strDate} ${strHours}:00 실황`
-    };
+body {
+    background: linear-gradient(135deg, #74abe2, #557ad1);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
 }
 
-/**
- * API 응답 데이터를 항목별로 매핑하여 화면에 출력하는 함수
- */
-function parseAndDisplayWeather(items) {
-    items.forEach(item => {
-        const value = item.obsrValue;
-        
-        switch (item.category) {
-            case "T1H": // 기온
-                document.getElementById("temp-value").innerText = value;
-                break;
-            case "RN1": // 1시간 강수량
-                document.getElementById("rn1-value").innerText = `${value} mm`;
-                break;
-            case "REH": // 습도
-                document.getElementById("reh-value").innerText = `${value} %`;
-                break;
-            case "VEC": // 풍향
-                document.getElementById("vec-value").innerText = `${value} deg`;
-                break;
-            case "WSD": // 풍속
-                document.getElementById("wsd-value").innerText = `${value} m/s`;
-                break;
-            case "PTY": // 강수형태
-                document.getElementById("rain-status").innerText = getRainStatusText(value);
-                break;
-            default:
-                break;
-        }
-    });
+/* 대시보드 컨테이너 */
+.container {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
 }
 
-/**
- * 강수형태 코드(PTY)를 직관적인 텍스트로 변환하는 함수
- */
-function getRainStatusText(code) {
-    const statusMap = {
-        "0": "맑음 / 비 안옴",
-        "1": "비 옴",
-        "2": "비 또는 눈",
-        "3": "눈 옴",
-        "5": "빗방울 떨어짐",
-        "6": "빗방울 또는 눈날림",
-        "7": "눈날림"
-    };
-    return statusMap[code] || "정보 없음";
+/* 헤더 및 지역 표시 스타일 */
+.location-container {
+    margin-bottom: 15px;
+}
+
+.location-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    color: #e0e0e0;
+}
+
+#location-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    font-size: 1.6rem;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #f0f4ff;
+}
+
+header p {
+    font-size: 0.85rem;
+    color: #d1d8ec;
+    margin-bottom: 30px;
+}
+
+/* 메인 날씨 표시 (기온) */
+.weather-main {
+    margin-bottom: 40px;
+}
+
+.temp-container {
+    font-size: 4.5rem;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 1;
+}
+
+.temp-container .unit {
+    font-size: 2rem;
+    vertical-align: super;
+    font-weight: normal;
+}
+
+.weather-status {
+    font-size: 1.1rem;
+    margin-top: 12px;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 18px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+/* 세부 항목 격자 레이아웃 */
+.weather-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.detail-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detail-item .label {
+    font-size: 0.85rem;
+    color: #d1d8ec;
+    margin-bottom: 5px;
+}
+
+.detail-item .value {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* 푸터 영역 */
+footer {
+    margin-top: 20px;
+}
+
+footer p {
+    font-size: 0.75rem;
+    color: #cccccc;
 }
